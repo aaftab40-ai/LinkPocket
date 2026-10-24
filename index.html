@@ -1,137 +1,327 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#fff9fb">
-<title>LinkPocket — Save what matters</title>
-<style>
-:root{--bg:#fff9fb;--panel:#ffffff;--text:#211b1e;--muted:#81767b;--line:#eee3e8;--pink:#b9657a;--pink-soft:#faedf1;--shadow:0 8px 28px rgba(73,35,48,.06)}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;transition:background .2s,color .2s}
-body.dark{--bg:#171719;--panel:#222225;--text:#f6f0f2;--muted:#b2a7ac;--line:#383438;--pink:#c8798d;--pink-soft:#35242a;--shadow:0 8px 28px rgba(0,0,0,.18)}
-button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--pink);outline-offset:2px}
-.topbar{height:72px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 20px;border-bottom:1px solid var(--line);background:var(--panel);position:sticky;top:0;z-index:5}
-.brand{display:flex;align-items:center;gap:10px;font-size:23px;font-weight:800;letter-spacing:-.8px}.logo{width:40px;height:40px;border:2px solid var(--pink);border-radius:13px;display:grid;place-items:center;color:var(--pink);font-size:24px;transform:rotate(-8deg)}
-.top-actions{display:flex;gap:8px}.icon-btn,.menu-btn{width:44px;height:44px;border:1px solid var(--line);border-radius:14px;background:var(--panel);color:var(--text);font-size:21px;display:grid;place-items:center}
-.layout{display:grid;grid-template-columns:245px minmax(0,1fr);max-width:1240px;margin:auto;min-height:calc(100vh - 72px)}
-.sidebar{border-right:1px solid var(--line);padding:22px 15px;background:var(--panel)}.side-brand{display:none}.nav-btn{width:100%;display:flex;align-items:center;gap:12px;padding:13px 14px;margin:4px 0;border:0;border-radius:13px;background:transparent;color:var(--muted);text-align:left}.nav-btn.active,.nav-btn:hover{background:var(--pink-soft);color:var(--text)}.nav-count{margin-left:auto;font-size:12px;color:var(--muted)}
-.sidebar-note{margin:28px 10px 0;color:var(--muted);font-size:12px}
-main{padding:50px clamp(18px,5vw,64px) 60px;min-width:0}.eyebrow{color:var(--pink);font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin:0 0 12px}.hero h1{font-size:clamp(36px,5vw,62px);line-height:1.04;letter-spacing:-2.5px;margin:0 0 18px;font-weight:850}.hero p{font-size:18px;color:var(--muted);margin:0 0 32px}.save-box{background:var(--panel);border:1px solid var(--line);padding:18px;border-radius:20px;box-shadow:var(--shadow)}
-.url-row{display:flex;gap:10px}.field{width:100%;min-width:0;padding:15px 16px;border:1px solid var(--line);border-radius:14px;background:var(--bg);color:var(--text)}.primary{border:0;background:var(--pink);color:white;font-weight:750;padding:14px 20px;border-radius:14px;white-space:nowrap}.primary:hover{filter:brightness(.96)}.extra-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.extra-row .field{padding:11px 13px;font-size:14px}
-.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:42px 0 16px}.section-head h2{font-size:26px;letter-spacing:-.8px;margin:0}.section-tools{display:flex;gap:8px;align-items:center}.search{max-width:300px;padding:11px 14px;border-radius:13px}.small-btn{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:11px;padding:8px 11px;font-size:13px}.small-btn:hover{background:var(--pink-soft)}.cards{display:grid;gap:12px}.card{border:1px solid var(--line);background:var(--panel);border-radius:18px;padding:18px;box-shadow:0 3px 12px rgba(0,0,0,.015)}.card-top{display:flex;gap:12px;align-items:flex-start}.site-icon{flex:0 0 38px;width:38px;height:38px;border-radius:12px;background:var(--pink-soft);color:var(--pink);display:grid;place-items:center;font-weight:800}.card-info{min-width:0;flex:1}.card-title{font-weight:800;font-size:17px;overflow-wrap:anywhere}.card-url{color:var(--muted);font-size:14px;overflow-wrap:anywhere;display:block;margin-top:3px}.card-note{font-size:14px;color:var(--muted);margin-top:8px;white-space:pre-wrap}.meta{font-size:12px;color:var(--muted);margin-top:8px}.actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:15px}.empty{padding:42px 20px;text-align:center;border:1px dashed var(--line);border-radius:18px;color:var(--muted)}.empty strong{display:block;color:var(--text);font-size:17px;margin-bottom:4px}.hidden{display:none!important}.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#272125;color:#fff;padding:11px 16px;border-radius:12px;box-shadow:var(--shadow);z-index:20;max-width:90vw;text-align:center}.drawer-scrim{display:none}.modal-backdrop{position:fixed;inset:0;background:#0008;z-index:30;display:grid;place-items:center;padding:16px}.modal{background:var(--panel);color:var(--text);width:min(520px,100%);padding:22px;border-radius:20px;box-shadow:var(--shadow)}.modal h3{margin:0 0 14px;font-size:22px}.modal .field{margin:6px 0}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}.help{font-size:13px;color:var(--muted);margin-top:8px}
-@media(max-width:760px){.topbar{height:64px;padding:0 14px}.brand{font-size:21px}.logo{width:36px;height:36px}.layout{display:block}.sidebar{position:fixed;z-index:15;top:0;bottom:0;left:0;width:min(300px,85vw);transform:translateX(-105%);transition:transform .2s;box-shadow:var(--shadow);padding-top:20px}.sidebar.open{transform:translateX(0)}.side-brand{display:flex;justify-content:space-between;align-items:center;margin:0 8px 20px;font-weight:800;font-size:20px}.drawer-scrim.show{display:block;position:fixed;inset:0;background:#0007;z-index:14}main{padding:34px 17px 48px}.hero h1{letter-spacing:-1.7px}.hero p{font-size:16px}.url-row{display:grid}.url-row .primary{width:100%}.extra-row{grid-template-columns:1fr}.section-head{align-items:flex-start;flex-direction:column;margin-top:32px}.section-tools{width:100%}.search{max-width:none;flex:1}.card{padding:15px}.sidebar-note{margin-top:20px}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkPocket — Save what matters</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #111111;
+            --card-bg: #f5f5f7;
+            --border-color: #e5e5ea;
+            --accent-color: #0071e3;
+            --star-color: #ffcc00;
+        }
+        [data-theme="dark"] {
+            --bg-color: #000000;
+            --text-color: #f5f5f7;
+            --card-bg: #1c1c1e;
+            --border-color: #2c2c2e;
+            --accent-color: #0a84ff;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background 0.3s, color 0.3s;
+            padding-bottom: 60px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .logo-area {
+            display: flex;
+            flex-direction: column;
+        }
+        .logo-area h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        .creator-tag {
+            font-size: 13px;
+            color: #888;
+            margin-top: 2px;
+            font-weight: 500;
+        }
+        .menu-btn, .theme-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 5px;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: 280px;
+            height: 100%;
+            background-color: var(--bg-color);
+            border-right: 1px solid var(--border-color);
+            transition: left 0.3s ease;
+            z-index: 1000;
+            padding: 20px;
+        }
+        .sidebar.active {
+            left: 0;
+        }
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .nav-links {
+            list-style: none;
+        }
+        .nav-links li {
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .nav-links li:hover, .nav-links li.active {
+            background-color: var(--card-bg);
+            color: var(--accent-color);
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.4);
+            display: none;
+            z-index: 999;
+        }
+        .overlay.active {
+            display: block;
+        }
+        main {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .hero {
+            margin: 30px 0;
+            text-align: center;
+        }
+        .hero h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        .hero p {
+            color: #888;
+            font-size: 15px;
+        }
+        .input-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        .input-box input {
+            flex: 1;
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-size: 16px;
+        }
+        .input-box button {
+            padding: 12px 20px;
+            border-radius: 10px;
+            border: none;
+            background-color: var(--accent-color);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .section-panel {
+            display: none;
+        }
+        .section-panel.active {
+            display: block;
+        }
+        .section-heading {
+            font-size: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .link-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .link-card a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            word-break: break-all;
+            flex: 1;
+            margin-right: 10px;
+        }
+        .actions-btn {
+            display: flex;
+            gap: 12px;
+        }
+        .star-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #ccc;
+        }
+        .star-btn.fav {
+            color: var(--star-color);
+        }
+        .delete-btn {
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            color: #ff3b30;
+        }
+        .empty-text {
+            color: #888;
+            font-style: italic;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .settings-item {
+            background-color: var(--card-bg);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        .settings-item button {
+            background-color: #ff3b30;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
-<header class="topbar">
-  <div class="brand"><span class="logo">∞</span><span>LinkPocket</span></div>
-  <div class="top-actions">
-    <button class="icon-btn" id="openMenu" aria-label="Open menu">☰</button>
-    <button class="icon-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark mode">☾</button>
-  </div>
-</header>
-<div class="drawer-scrim" id="scrim"></div>
-<div class="layout">
-  <aside class="sidebar" id="sidebar">
-    <div class="side-brand"><span>LinkPocket</span><button class="icon-btn" id="closeMenu" aria-label="Close menu">×</button></div>
-    <button class="nav-btn active" data-view="all">⌂ <span>All Links</span><span class="nav-count" id="countAll">0</span></button>
-    <button class="nav-btn" data-view="favorites">☆ <span>Favorites</span><span class="nav-count" id="countFav">0</span></button>
-    <button class="nav-btn" data-view="collections">▦ <span>Collections</span><span class="nav-count" id="countCollections">0</span></button>
-    <button class="nav-btn" data-view="share">↗ <span>Portable Share</span></button>
-    <button class="nav-btn" data-view="settings">⚙ <span>Settings</span></button>
-    <p class="sidebar-note">Your links stay in this browser on this device. Export a backup to move them.</p>
-  </aside>
-  <main>
-    <section class="hero" id="hero">
-      <p class="eyebrow">Your quiet corner of the web</p>
-      <h1>Save what matters.</h1>
-      <p>Keep useful links close, organized, and private in your browser.</p>
-    </section>
-    <section class="save-box" id="saveBox">
-      <form id="saveForm">
-        <div class="url-row"><input class="field" id="urlInput" type="url" placeholder="Paste your link here..." autocomplete="url" required aria-label="URL to save"><button class="primary" type="submit" id="saveButton">Save link</button></div>
-        <div class="extra-row">
-          <input class="field" id="titleInput" placeholder="Title (optional)" maxlength="120" aria-label="Link title">
-          <select class="field" id="collectionInput" aria-label="Collection"><option value="">No collection</option></select>
+
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <header>
+        <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+        <div class="logo-area">
+            <h1>∞ LinkPocket</h1>
+            <div class="creator-tag">Created by Aftab</div>
         </div>
-        <div class="extra-row"><input class="field" id="noteInput" placeholder="Note (optional)" maxlength="500" aria-label="Optional note"><button class="small-btn" type="button" id="newCollectionBtn">＋ New collection</button></div>
-      </form>
-    </section>
-    <section id="contentSection">
-      <div class="section-head"><h2 id="listHeading">All links</h2><div class="section-tools"><input class="field search" id="searchInput" placeholder="Search links..." aria-label="Search links"><button class="small-btn" id="exportBtn">Export</button></div></div>
-      <div id="collectionBar" class="hidden" style="margin-bottom:14px"></div>
-      <div class="cards" id="cards"></div>
-      <div class="empty hidden" id="empty"><strong id="emptyTitle">Nothing saved here yet</strong><span id="emptyText">Paste a URL above to keep it close.</span></div>
-    </section>
-    <section class="hidden" id="settingsSection">
-      <div class="section-head"><h2>Settings</h2></div>
-      <div class="save-box">
-        <h3>Data & privacy</h3>
-        <p style="color:var(--muted)">Your saved links and collections are stored in this browser using local storage. They are not synced to other devices automatically.</p>
-        <div class="actions"><button class="small-btn" id="settingsExport">Export backup (JSON)</button><button class="small-btn" id="importBtn">Import backup (JSON)</button><button class="small-btn" id="clearAllBtn">Delete all local data</button></div>
-        <input type="file" id="importFile" accept=".json,application/json" class="hidden">
-      </div>
-    </section>
-    <section class="hidden" id="shareSection">
-      <div class="section-head"><h2>Portable Share</h2></div>
-      <div class="save-box"><p>Export your links and collections as a JSON backup, then share the file or import it on another device. This does not create a public hosted collection link.</p><div class="actions"><button class="primary" id="shareExportBtn">Export links & collections</button><button class="small-btn" id="shareNativeBtn">Share backup</button><button class="small-btn" id="shareImportBtn">Import backup</button></div><p class="help">For privacy, review your backup before sharing it with anyone.</p></div>
-    </section>
-    <section class="hidden" id="collectionsSection">
-      <div class="section-head"><h2>Collections</h2><button class="primary" id="collectionCreateFromPage">＋ New collection</button></div>
-      <div class="cards" id="collectionCards"></div>
-      <div class="empty hidden" id="collectionEmpty"><strong>No collections yet</strong><span>Create a collection to organize your links.</span></div>
-    </section>
-  </main>
-</div>
-<div id="modalRoot"></div><div id="toast" class="toast hidden" role="status"></div>
-<script>
-(() => {
-const STORE='linkpocket.v1.data', THEME='linkpocket.v1.theme';
-const $=id=>document.getElementById(id);
-let data={links:[],collections:[]}, view='all', activeCollection='', searchTerm='', toastTimer;
-function load(){try{const raw=localStorage.getItem(STORE);if(raw){const parsed=JSON.parse(raw);data.links=Array.isArray(parsed.links)?parsed.links:[];data.collections=Array.isArray(parsed.collections)?parsed.collections:[]}}catch(e){notify('Could not read saved data in this browser.')}const t=localStorage.getItem(THEME);if(t==='dark')document.body.classList.add('dark');updateThemeIcon()}
-function persist(){try{localStorage.setItem(STORE,JSON.stringify(data));return true}catch(e){notify('Storage is full or unavailable. Export a backup and free some space.');return false}}
-function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
-function cleanUrl(v){try{const u=new URL(v.trim());if(!['http:','https:'].includes(u.protocol))return null;return u.href}catch(e){return null}}
-function host(url){try{return new URL(url).hostname.replace(/^www\./,'')}catch(e){return 'Link'}}
-function titleFrom(url){return host(url)||url}
-function notify(msg){const t=$('toast');t.textContent=msg;t.classList.remove('hidden');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.add('hidden'),2600)}
-function updateThemeIcon(){$('themeToggle').textContent=document.body.classList.contains('dark')?'☀':'☾'}
-function toggleTheme(){document.body.classList.toggle('dark');localStorage.setItem(THEME,document.body.classList.contains('dark')?'dark':'light');updateThemeIcon()}
-function showDrawer(open){$('sidebar').classList.toggle('open',open);$('scrim').classList.toggle('show',open)}
-function switchView(next,collection=''){view=next;activeCollection=collection;searchTerm='';$('searchInput').value='';$('hero').classList.toggle('hidden',next==='settings'||next==='share'||next==='collections');$('saveBox').classList.toggle('hidden',next==='settings'||next==='share'||next==='collections');$('contentSection').classList.toggle('hidden',next==='settings'||next==='share'||next==='collections');$('settingsSection').classList.toggle('hidden',next!=='settings');$('shareSection').classList.toggle('hidden',next!=='share');$('collectionsSection').classList.toggle('hidden',next!=='collections');document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.view===next));showDrawer(false);render()}
-function render(){
- $('countAll').textContent=data.links.length;$('countFav').textContent=data.links.filter(x=>x.favorite).length;$('countCollections').textContent=data.collections.length;
- const select=$('collectionInput'), old=select.value;select.innerHTML='<option value="">No collection</option>'+data.collections.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');if(data.collections.some(c=>c.id===old))select.value=old;
- $('listHeading').textContent=view==='favorites'?'Favorites':activeCollection?(data.collections.find(c=>c.id===activeCollection)?.name||'Collection'):'All links';
- $('collectionBar').classList.toggle('hidden',view!=='all'&&view!=='favorites');
- let links=data.links.filter(l=>view==='favorites'?l.favorite:(!activeCollection||l.collectionId===activeCollection));
- if(searchTerm){const q=searchTerm.toLowerCase();links=links.filter(l=>(l.title+' '+l.url+' '+(l.note||'')+' '+host(l.url)).toLowerCase().includes(q))}
- $('cards').innerHTML=links.map(linkCard).join('');
- $('empty').classList.toggle('hidden',links.length>0);$('emptyTitle').textContent=view==='favorites'?'No favorites yet':'Nothing saved here yet';$('emptyText').textContent=view==='favorites'?'Tap Favorite on a link to find it here.':'Paste a URL above to keep it close.';
- renderCollections();
-}
-function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function linkCard(l){return `<article class="card"><div class="card-top"><div class="site-icon">${esc((host(l.url)[0]||'L').toUpperCase())}</div><div class="card-info"><div class="card-title">${esc(l.title||titleFrom(l.url))}${l.favorite?' <span style="color:var(--pink)">★</span>':''}</div><a class="card-url" href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">${esc(l.url)}</a>${l.note?`<div class="card-note">${esc(l.note)}</div>`:''}<div class="meta">${esc(new Date(l.createdAt||Date.now()).toLocaleDateString())}${l.collectionId&&data.collections.find(c=>c.id===l.collectionId)?' · '+esc(data.collections.find(c=>c.id===l.collectionId).name):''}</div></div></div><div class="actions"><button class="small-btn" data-action="open" data-id="${l.id}">Open ↗</button><button class="small-btn" data-action="copy" data-id="${l.id}">Copy</button><button class="small-btn" data-action="share" data-id="${l.id}">Share</button><button class="small-btn" data-action="favorite" data-id="${l.id}">${l.favorite?'★ Favorited':'☆ Favorite'}</button><button class="small-btn" data-action="edit" data-id="${l.id}">Edit</button><button class="small-btn" data-action="move" data-id="${l.id}">Move</button><button class="small-btn" data-action="delete" data-id="${l.id}">Delete</button></div></article>`}
-function renderCollections(){const box=$('collectionCards');box.innerHTML=data.collections.map(c=>`<article class="card"><div class="card-top"><div class="site-icon">▦</div><div class="card-info"><div class="card-title">${esc(c.name)}</div><div class="meta">${data.links.filter(l=>l.collectionId===c.id).length} links</div></div></div><div class="actions"><button class="small-btn" data-action="openCollection" data-id="${c.id}">Open collection</button><button class="small-btn" data-action="renameCollection" data-id="${c.id}">Rename</button><button class="small-btn" data-action="deleteCollection" data-id="${c.id}">Delete collection</button></div></article>`).join('');$('collectionEmpty').classList.toggle('hidden',data.collections.length>0)}
-function createCollection(){openModal('New collection',`<input class="field" id="modalCollectionName" placeholder="Collection name" maxlength="60">`,()=>{const name=$('modalCollectionName').value.trim();if(!name){notify('Enter a collection name.');return false}if(data.collections.some(c=>c.name.toLowerCase()===name.toLowerCase())){notify('That collection already exists.');return false}data.collections.push({id:uid(),name});persist();render();notify('Collection created.');return true},'Create')}
-function openModal(title,body,onSave,saveLabel='Save'){const root=$('modalRoot');root.innerHTML=`<div class="modal-backdrop"><div class="modal" role="dialog" aria-modal="true"><h3>${esc(title)}</h3>${body}<div class="modal-actions"><button class="small-btn" id="modalCancel">Cancel</button><button class="primary" id="modalSave">${esc(saveLabel)}</button></div></div></div>`;root.querySelector('.modal-backdrop').addEventListener('click',e=>{if(e.target.classList.contains('modal-backdrop'))root.innerHTML=''});$('modalCancel').onclick=()=>root.innerHTML='';$('modalSave').onclick=()=>{if(onSave()!==false)root.innerHTML=''};setTimeout(()=>root.querySelector('input')?.focus(),50)}
-function editLink(id){const l=data.links.find(x=>x.id===id);if(!l)return;openModal('Edit link',`<input class="field" id="editTitle" placeholder="Title" maxlength="120" value="${esc(l.title)}"><input class="field" id="editUrl" type="url" placeholder="https://..." value="${esc(l.url)}"><textarea class="field" id="editNote" placeholder="Note (optional)" maxlength="500" rows="3">${esc(l.note||'')}</textarea><select class="field" id="editCollection"><option value="">No collection</option>${data.collections.map(c=>`<option value="${esc(c.id)}" ${c.id===l.collectionId?'selected':''}>${esc(c.name)}</option>`).join('')}</select>`,()=>{const url=cleanUrl($('editUrl').value);if(!url){notify('Enter a valid http or https URL.');return false}l.url=url;l.title=$('editTitle').value.trim()||titleFrom(url);l.note=$('editNote').value.trim();l.collectionId=$('editCollection').value;persist();render();notify('Link updated.');return true})}
-function moveLink(id){const l=data.links.find(x=>x.id===id);if(!l)return;openModal('Move link',`<select class="field" id="moveCollection"><option value="">No collection</option>${data.collections.map(c=>`<option value="${esc(c.id)}" ${c.id===l.collectionId?'selected':''}>${esc(c.name)}</option>`).join('')}</select><p class="help">Create a collection first if you want to move this link into one.</p>`,()=>{l.collectionId=$('moveCollection').value;persist();render();notify('Link moved.');return true})}
-async function copyText(text){try{await navigator.clipboard.writeText(text);notify('Copied to clipboard.')}catch(e){const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');notify('Copied to clipboard.')}catch(err){notify('Copy not supported here. You can select the link manually.')}ta.remove()}}
-async function shareItem(l){if(navigator.share){try{await navigator.share({title:l.title||titleFrom(l.url),text:l.note||'',url:l.url})}catch(e){}}else{await copyText(l.url);notify('Share is unavailable here; link copied instead.')}}
-function downloadBackup(){const blob=new Blob([JSON.stringify({app:'LinkPocket',version:1,exportedAt:new Date().toISOString(),...data},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='linkpocket-backup.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);notify('Backup export started.')}
-function importBackup(file){const reader=new FileReader();reader.onload=()=>{try{const obj=JSON.parse(reader.result);if(!Array.isArray(obj.links)||!Array.isArray(obj.collections))throw new Error('Invalid backup');const incomingLinks=obj.links.filter(l=>l&&cleanUrl(l.url)).map(l=>({id:String(l.id||uid()),url:cleanUrl(l.url),title:String(l.title||titleFrom(l.url)),note:String(l.note||''),favorite:!!l.favorite,collectionId:'',createdAt:l.createdAt||new Date().toISOString()}));const map=new Map();obj.collections.forEach(c=>{if(c&&c.name){const id=uid();data.collections.push({id,name:String(c.name).slice(0,60)});map.set(c.id,id)}});incomingLinks.forEach(l=>{const old=obj.links.find(x=>String(x.id)===l.id);l.collectionId=map.get(old?.collectionId)||'';if(!data.links.some(x=>x.url===l.url))data.links.push(l)});persist();render();notify('Backup imported. Duplicate URLs were skipped.')}catch(e){notify('That file is not a valid LinkPocket backup.')} $('importFile').value=''};reader.readAsText(file)}
-$('saveForm').addEventListener('submit',e=>{e.preventDefault();const url=cleanUrl($('urlInput').value);if(!url){notify('Please paste a valid http or https link.');return}if(data.links.some(l=>l.url===url)){notify('That link is already saved.');return}data.links.unshift({id:uid(),url,title:$('titleInput').value.trim()||titleFrom(url),note:$('noteInput').value.trim(),collectionId:$('collectionInput').value,favorite:false,createdAt:new Date().toISOString()});persist();$('urlInput').value='';$('titleInput').value='';$('noteInput').value='';$('collectionInput').value='';switchView('all');notify('Link saved.');});
-$('searchInput').addEventListener('input',e=>{searchTerm=e.target.value;render()});
-$('themeToggle').addEventListener('click',toggleTheme);$('openMenu').addEventListener('click',()=>showDrawer(true));$('closeMenu').addEventListener('click',()=>showDrawer(false));$('scrim').addEventListener('click',()=>showDrawer(false));
-document.querySelectorAll('.nav-btn').forEach(b=>b.addEventListener('click',()=>switchView(b.dataset.view)));
-$('newCollectionBtn').onclick=createCollection;$('collectionCreateFromPage').onclick=createCollection;
-$('exportBtn').onclick=downloadBackup;$('settingsExport').onclick=downloadBackup;$('shareExportBtn').onclick=downloadBackup;$('shareNativeBtn').onclick=async()=>{downloadBackup();if(navigator.share){try{await navigator.share({title:'LinkPocket backup',text:'My LinkPocket JSON backup is downloaded on this device.'})}catch(e){}}};$('shareImportBtn').onclick=()=>$('importFile').click();$('importBtn').onclick=()=>$('importFile').click();$('importFile').addEventListener('change',e=>{if(e.target.files[0])importBackup(e.target.files[0])});
-$('clearAllBtn').onclick=()=>openModal('Delete all local data?',`<p>This permanently deletes all links and collections saved in this browser. Export a backup first if you may need them.</p>`,()=>{data={links:[],collections:[]};persist();render();notify('Local data cleared.');return true},'Delete all');
-document.addEventListener('click',e=>{const b=e.target.closest('[data-action]');if(!b)return;const id=b.dataset.id,act=b.dataset.action,l=data.links.find(x=>x.id===id);if(act==='open'&&l)window.open(l.url,'_blank','noopener,noreferrer');if(act==='copy'&&l)copyText(l.url);if(act==='share'&&l)shareItem(l);if(act==='favorite'&&l){l.favorite=!l.favorite;persist();render();notify(l.favorite?'Added to favorites.':'Removed from favorites.')}if(act==='edit')editLink(id);if(act==='move')moveLink(id);if(act==='delete'&&l)openModal('Delete this link?',`<p>${esc(l.title||l.url)} will be removed from this browser.</p>`,()=>{data.links=data.links.filter(x=>x.id!==id);persist();render();notify('Link deleted.');return true},'Delete');if(act==='openCollection')switchView('all',id);if(act==='renameCollection'){const c=data.collections.find(x=>x.id===id);if(c)openModal('Rename collection',`<input class="field" id="renameCollectionInput" maxlength="60" value="${esc(c.name)}">`,()=>{const n=$('renameCollectionInput').value.trim();if(!n){notify('Enter a name.');return false}c.name=n;persist();render();notify('Collection renamed.');return true})}if(act==='deleteCollection'){const c=data.collections.find(x=>x.id===id);if(c)openModal('Delete collection?',`<p>Links in “${esc(c.name)}” will be kept, but moved to No collection.</p>`,()=>{data.collections=data.collections.filter(x=>x.id!==id);data.links.forEach(x=>{if(x.collectionId===id)x.collectionId=''});if(activeCollection===id)activeCollection='';persist();render();notify('Collection deleted.');return true},'Delete')}});
-load();render();
-})();
-</script>
-</body>
-</html>
+        <button class="theme-btn" id="theme-toggle" onclick="toggleTheme()">☾</button>
+    </header>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Menu</h2>
+            <button class="menu-btn" onclick="toggleSidebar()">×</button>
+        </div>
+        <ul class="nav-links">
+            <li id="tab-all" class="active" onclick="switchTab('all')">⌂ All Links (<span id="count-all">0</span>)</li>
+            <li id="tab-fav" onclick="switchTab('fav')">★ Favorites (<span id="count-fav">0</span>)</li>
+            <li id="tab-settings" onclick="switchTab('settings')">⚙ Settings</li>
+        </ul>
+    </div>
+
+    <main>
+        <div class="hero" id="hero-area">
+            <h2>Save what matters.</h2>
+            <p>Keep useful links close, organized, and private in your browser.</p>
+        </div>
+
+        <div class="input-box" id="input-area">
+            <input type="url" id="link-input" placeholder="Paste a URL here...">
+            <button onclick="addLink()">Save link</button>
+        </div>
+
+        <!-- ALL LINKS BOX -->
+        <div id="panel-all" class="section-panel active">
+            <div class="section-heading">
+                <h3>All Links</h3>
+            </div>
+            <div id="links-container"></div>
+        </div>
+
+        <!-- EXCLUSIVE FAVORITES BOX -->
+        <div id="panel-fav" class="section-panel">
+            <div class="section-heading">
+                <h3>★ My Favorites</h3>
+            </div>
+            <div id="favorites-container"></div>
+        </div>
+
+        <!-- SETTINGS BOX -->
+        <div id="panel-settings" class="section-panel">
+            <div class="section-heading">
+                <h3>Settings</h3>
+            </div>
+            <div class="settings-item">
+                <h4>Data & Privacy</h4>
+                <p style="font-size:14px; color:#888; margin-top:5px;">Your saved links are stored securely in this local browser application.</p>
+                <button onclick="clearData()">Delete all local data</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let links = JSON.parse(localStorage.getItem('saved_links')) || [];
+
+        function saveToStorage() {
+            localStorage.setItem('saved_links', JSON.stringify(links));
+            updateCounts();
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        function toggleTheme() {
+            const body = document.documentElement;
+            const btn = document.getElementById('theme-toggle');
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                btn.innerText = '☾';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                btn.innerText = '☀';
+            }
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.section-panel').forEach(panel => panel.classList.remove('active'));
+            document.querySelectorAll('.nav-links li').forEach(li => li.classList.remove('active'));
+
+            document.getElementById(`panel-${tabName}`).classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+
+            if (tabName === 'settings') {
