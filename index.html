@@ -1,327 +1,1062 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LinkPocket — Save what matters</title>
-    <style>
-        :root {
-            --bg-color: #ffffff;
-            --text-color: #111111;
-            --card-bg: #f5f5f7;
-            --border-color: #e5e5ea;
-            --accent-color: #0071e3;
-            --star-color: #ffcc00;
-        }
-        [data-theme="dark"] {
-            --bg-color: #000000;
-            --text-color: #f5f5f7;
-            --card-bg: #1c1c1e;
-            --border-color: #2c2c2e;
-            --accent-color: #0a84ff;
-        }
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            transition: background 0.3s, color 0.3s;
-            padding-bottom: 60px;
-        }
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .logo-area {
-            display: flex;
-            flex-direction: column;
-        }
-        .logo-area h1 {
-            font-size: 24px;
-            font-weight: 700;
-        }
-        .creator-tag {
-            font-size: 13px;
-            color: #888;
-            margin-top: 2px;
-            font-weight: 500;
-        }
-        .menu-btn, .theme-btn {
-            background: none;
-            border: none;
-            color: var(--text-color);
-            font-size: 20px;
-            cursor: pointer;
-            padding: 5px;
-        }
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: -280px;
-            width: 280px;
-            height: 100%;
-            background-color: var(--bg-color);
-            border-right: 1px solid var(--border-color);
-            transition: left 0.3s ease;
-            z-index: 1000;
-            padding: 20px;
-        }
-        .sidebar.active {
-            left: 0;
-        }
-        .sidebar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-        .nav-links {
-            list-style: none;
-        }
-        .nav-links li {
-            padding: 12px 15px;
-            margin-bottom: 8px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .nav-links li:hover, .nav-links li.active {
-            background-color: var(--card-bg);
-            color: var(--accent-color);
-        }
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.4);
-            display: none;
-            z-index: 999;
-        }
-        .overlay.active {
-            display: block;
-        }
-        main {
-            padding: 20px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        .hero {
-            margin: 30px 0;
-            text-align: center;
-        }
-        .hero h2 {
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-        .hero p {
-            color: #888;
-            font-size: 15px;
-        }
-        .input-box {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-        }
-        .input-box input {
-            flex: 1;
-            padding: 12px 15px;
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
-            background-color: var(--card-bg);
-            color: var(--text-color);
-            font-size: 16px;
-        }
-        .input-box button {
-            padding: 12px 20px;
-            border-radius: 10px;
-            border: none;
-            background-color: var(--accent-color);
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .section-panel {
-            display: none;
-        }
-        .section-panel.active {
-            display: block;
-        }
-        .section-heading {
-            font-size: 20px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .link-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .link-card a {
-            color: var(--text-color);
-            text-decoration: none;
-            font-weight: 500;
-            word-break: break-all;
-            flex: 1;
-            margin-right: 10px;
-        }
-        .actions-btn {
-            display: flex;
-            gap: 12px;
-        }
-        .star-btn {
-            background: none;
-            border: none;
-            font-size: 18px;
-            cursor: pointer;
-            color: #ccc;
-        }
-        .star-btn.fav {
-            color: var(--star-color);
-        }
-        .delete-btn {
-            background: none;
-            border: none;
-            font-size: 16px;
-            cursor: pointer;
-            color: #ff3b30;
-        }
-        .empty-text {
-            color: #888;
-            font-style: italic;
-            text-align: center;
-            margin-top: 20px;
-        }
-        .settings-item {
-            background-color: var(--card-bg);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-        }
-        .settings-item button {
-            background-color: #ff3b30;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#fff9fb">
+<title>LinkPocket — Save what matters</title>
+
+<style>
+:root {
+    --bg: #fff9fb;
+    --text: #292329;
+    --card: #ffffff;
+    --soft: #f8edf1;
+    --border: #eadde2;
+    --accent: #b9657a;
+    --muted: #82777c;
+    --danger: #d83c50;
+    --star: #e4a51b;
+}
+
+[data-theme="dark"] {
+    --bg: #171518;
+    --text: #f6eff2;
+    --card: #211e22;
+    --soft: #2a2429;
+    --border: #3c3339;
+    --accent: #e08ca2;
+    --muted: #b6a9af;
+    --danger: #ff737d;
+    --star: #ffd166;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    transition: background .2s, color .2s;
+}
+
+button, input {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+button:focus-visible,
+input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+}
+
+.logo-area {
+    flex: 1;
+}
+
+.logo-area h1 {
+    font-size: 23px;
+    letter-spacing: -.7px;
+}
+
+.creator-tag {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+}
+
+.icon-btn {
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--card);
+    color: var(--text);
+    font-size: 21px;
+    display: grid;
+    place-items: center;
+}
+
+.icon-btn:hover {
+    background: var(--soft);
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    max-width: 85vw;
+    height: 100dvh;
+    padding: 20px;
+    background: var(--bg);
+    border-right: 1px solid var(--border);
+    z-index: 1001;
+    transform: translateX(-105%);
+    transition: transform .25s ease;
+    overflow-y: auto;
+    visibility: hidden;
+}
+
+.sidebar.active {
+    transform: translateX(0);
+    visibility: visible;
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.sidebar-header h2 {
+    font-size: 22px;
+}
+
+.nav-links {
+    list-style: none;
+}
+
+.nav-links li {
+    padding: 13px;
+    margin-bottom: 8px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+    transition: background .15s;
+}
+
+.nav-links li:hover,
+.nav-links li.active {
+    background: var(--soft);
+    color: var(--accent);
+}
+
+.nav-links li .count {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.42);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .2s, visibility .2s;
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+main {
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.hero {
+    text-align: center;
+    padding: 36px 0 28px;
+}
+
+.hero h2 {
+    font-size: clamp(26px, 6vw, 36px);
+    letter-spacing: -1px;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.input-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 32px;
+}
+
+.input-box input {
+    flex: 1;
+    min-width: 0;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--card);
+    color: var(--text);
+    font-size: 15px;
+}
+
+.primary-btn {
+    border: none;
+    border-radius: 12px;
+    padding: 12px 18px;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 650;
+    white-space: nowrap;
+}
+
+.primary-btn:hover {
+    filter: brightness(.95);
+}
+
+.section-panel {
+    display: none;
+}
+
+.section-panel.active {
+    display: block;
+}
+
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.section-heading h3 {
+    font-size: 21px;
+}
+
+.link-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px;
+    margin-bottom: 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow, 0 3px 12px rgba(0,0,0,.025));
+}
+
+.link-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.link-title {
+    display: block;
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 650;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+    margin-bottom: 5px;
+}
+
+.link-title:hover {
+    color: var(--accent);
+}
+
+.link-url {
+    color: var(--muted);
+    font-size: 12px;
+    overflow-wrap: anywhere;
+    line-height: 1.5;
+}
+
+.actions-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.action-btn {
+    width: 35px;
+    height: 35px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 16px;
+}
+
+.action-btn:hover {
+    background: var(--soft);
+}
+
+.action-btn.fav {
+    color: var(--star);
+}
+
+.action-btn.delete {
+    color: var(--danger);
+}
+
+.empty-text {
+    padding: 30px 12px;
+    color: var(--muted);
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.7;
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+}
+
+.settings-item {
+    padding: 18px;
+    margin-bottom: 14px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--card);
+}
+
+.settings-item h4 {
+    font-size: 16px;
+    margin-bottom: 7px;
+}
+
+.settings-item p {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.settings-item button {
+    margin-top: 14px;
+}
+
+.danger-btn {
+    border: none;
+    border-radius: 9px;
+    padding: 10px 14px;
+    background: var(--danger);
+    color: white;
+    font-weight: 600;
+}
+
+.toast {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    transform: translate(-50%, 20px);
+    background: var(--text);
+    color: var(--bg);
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-size: 13px;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: .2s;
+    max-width: calc(100vw - 32px);
+    text-align: center;
+}
+
+.toast.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+}
+
+footer {
+    padding: 24px 15px;
+    color: var(--muted);
+    font-size: 12px;
+    text-align: center;
+}
+
+@media (max-width: 480px) {
+    header {
+        padding: 12px;
+        gap: 9px;
+    }
+
+    .logo-area h1 {
+        font-size: 19px;
+    }
+
+    main {
+        padding: 15px;
+    }
+
+    .input-box {
+        gap: 7px;
+    }
+
+    .input-box input {
+        padding: 12px 10px;
+        font-size: 14px;
+    }
+
+    .primary-btn {
+        padding: 11px 12px;
+        font-size: 13px;
+    }
+
+    .link-card {
+        padding: 11px;
+        gap: 8px;
+    }
+
+    .actions-btn {
+        gap: 4px;
+    }
+
+    .action-btn {
+        width: 31px;
+        height: 33px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 350px) {
+    .link-card {
+        flex-wrap: wrap;
+    }
+
+    .link-info {
+        width: 100%;
+        flex-basis: 100%;
+    }
+
+    .actions-btn {
+        margin-left: auto;
+    }
+}
+</style>
 </head>
+
 <body>
 
-    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+<div class="overlay" id="overlay"></div>
 
-    <header>
-        <button class="menu-btn" onclick="toggleSidebar()">☰</button>
-        <div class="logo-area">
-            <h1>∞ LinkPocket</h1>
-            <div class="creator-tag">Created by Aftab</div>
-        </div>
-        <button class="theme-btn" id="theme-toggle" onclick="toggleTheme()">☾</button>
-    </header>
+<header>
+    <button class="icon-btn" id="menu-button"
+        aria-label="Open menu" aria-expanded="false">☰</button>
 
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h2>Menu</h2>
-            <button class="menu-btn" onclick="toggleSidebar()">×</button>
-        </div>
-        <ul class="nav-links">
-            <li id="tab-all" class="active" onclick="switchTab('all')">⌂ All Links (<span id="count-all">0</span>)</li>
-            <li id="tab-fav" onclick="switchTab('fav')">★ Favorites (<span id="count-fav">0</span>)</li>
-            <li id="tab-settings" onclick="switchTab('settings')">⚙ Settings</li>
-        </ul>
+    <div class="logo-area">
+        <h1>∞ LinkPocket</h1>
+        <div class="creator-tag">Created by Aftab</div>
     </div>
 
-    <main>
-        <div class="hero" id="hero-area">
-            <h2>Save what matters.</h2>
-            <p>Keep useful links close, organized, and private in your browser.</p>
+    <button class="icon-btn" id="theme-toggle"
+        aria-label="Switch to dark mode" title="Change theme">☾</button>
+</header>
+
+<aside class="sidebar" id="sidebar" aria-label="Main menu">
+    <div class="sidebar-header">
+        <h2>Menu</h2>
+        <button class="icon-btn" id="close-menu" aria-label="Close menu">×</button>
+    </div>
+
+    <ul class="nav-links">
+        <li id="tab-all" class="active" data-tab="all">
+            <span>⌂</span> All Links
+            <span class="count" id="count-all">0</span>
+        </li>
+
+        <li id="tab-fav" data-tab="fav">
+            <span>★</span> Favorites
+            <span class="count" id="count-fav">0</span>
+        </li>
+
+        <li id="tab-settings" data-tab="settings">
+            <span>⚙</span> Settings
+        </li>
+    </ul>
+</aside>
+
+<main>
+    <section class="hero" id="hero-area">
+        <h2>Save what matters.</h2>
+        <p>Keep useful links close, organized, and private in your browser.</p>
+    </section>
+
+    <form class="input-box" id="link-form">
+        <input
+            type="url"
+            id="link-input"
+            placeholder="Paste a URL here..."
+            aria-label="Link URL"
+            autocomplete="url"
+            required>
+        <button class="primary-btn" type="submit">Save link</button>
+    </form>
+
+    <section id="panel-all" class="section-panel active">
+        <div class="section-heading">
+            <h3>All Links</h3>
+        </div>
+        <div id="links-container"></div>
+    </section>
+
+    <section id="panel-fav" class="section-panel">
+        <div class="section-heading">
+            <h3>★ My Favorites</h3>
+        </div>
+        <div id="favorites-container"></div>
+    </section>
+
+    <section id="panel-settings" class="section-panel">
+        <div class="section-heading">
+            <h3>Settings</h3>
         </div>
 
-        <div class="input-box" id="input-area">
-            <input type="url" id="link-input" placeholder="Paste a URL here...">
-            <button onclick="addLink()">Save link</button>
+        <div class="settings-item">
+            <h4>Appearance</h4>
+            <p>Change between Light Mode and Dark Mode whenever you want.</p>
+            <button class="primary-btn" id="settings-theme" type="button">
+                Switch theme
+            </button>
         </div>
 
-        <!-- ALL LINKS BOX -->
-        <div id="panel-all" class="section-panel active">
-            <div class="section-heading">
-                <h3>All Links</h3>
-            </div>
-            <div id="links-container"></div>
+        <div class="settings-item">
+            <h4>Data &amp; Privacy</h4>
+            <p>
+                Your links are stored in this browser on this device.
+                Clearing browser data may remove your saved links.
+                Export or back up your links before clearing browser data.
+            </p>
+            <button class="danger-btn" id="clear-data" type="button">
+                Delete all local data
+            </button>
         </div>
+    </section>
+</main>
 
-        <!-- EXCLUSIVE FAVORITES BOX -->
-        <div id="panel-fav" class="section-panel">
-            <div class="section-heading">
-                <h3>★ My Favorites</h3>
-            </div>
-            <div id="favorites-container"></div>
-        </div>
+<footer>LinkPocket · Your links, your space.</footer>
 
-        <!-- SETTINGS BOX -->
-        <div id="panel-settings" class="section-panel">
-            <div class="section-heading">
-                <h3>Settings</h3>
-            </div>
-            <div class="settings-item">
-                <h4>Data & Privacy</h4>
-                <p style="font-size:14px; color:#888; margin-top:5px;">Your saved links are stored securely in this local browser application.</p>
-                <button onclick="clearData()">Delete all local data</button>
-            </div>
-        </div>
-    </main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-    <script>
-        let links = JSON.parse(localStorage.getItem('saved_links')) || [];
+<script>
+(function () {
+    "use strict";
 
-        function saveToStorage() {
-            localStorage.setItem('saved_links', JSON.stringify(links));
-            updateCounts();
-        }
+    const STORAGE_KEY = "linkpocket.v1.data";
+    const THEME_KEY = "linkpocket.v1.theme";
 
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
-            document.getElementById('overlay').classList.toggle('active');
-        }
+    const $ = (id) => document.getElementById(id);
 
-        function toggleTheme() {
-            const body = document.documentElement;
-            const btn = document.getElementById('theme-toggle');
-            if (body.getAttribute('data-theme') === 'dark') {
-                body.removeAttribute('data-theme');
-                btn.innerText = '☾';
-            } else {
-                body.setAttribute('data-theme', 'dark');
-                btn.innerText = '☀';
+    const sidebar = $("sidebar");
+    const overlay = $("overlay");
+    const menuButton = $("menu-button");
+    const themeButton = $("theme-toggle");
+    const linkInput = $("link-input");
+    const linkForm = $("link-form");
+    const allContainer = $("links-container");
+    const favContainer = $("favorites-container");
+    const toastElement = $("toast");
+
+    let links = loadLinks();
+    let currentTab = "all";
+    let toastTimer;
+
+    function loadLinks() {
+        try {
+            const stored = localStorage.getItem(STORAGE_KEY);
+
+            if (stored !== null) {
+                const data = JSON.parse(stored);
+                return Array.isArray(data)
+                    ? data.filter(item =>
+                        item &&
+                        typeof item.url === "string" &&
+                        typeof item.id === "string"
+                    )
+                    : [];
             }
+
+            // Import links saved by the older version of this app.
+            const oldStored = localStorage.getItem("saved_links");
+
+            if (oldStored !== null) {
+                const oldLinks = JSON.parse(oldStored);
+
+                if (Array.isArray(oldLinks)) {
+                    return oldLinks
+                        .filter(item => item && typeof item.url === "string")
+                        .map((item, index) => ({
+                            id: String(item.id || (
+                                Date.now() + "-" + index
+                            )),
+                            url: item.url,
+                            title: item.title || getTitle(item.url),
+                            favorite: Boolean(
+                                item.favorite || item.fav || item.isFavorite
+                            ),
+                            createdAt: item.createdAt || Date.now()
+                        }));
+                }
+            }
+
+            return [];
+        } catch (error) {
+            console.error("Could not load saved links:", error);
+            return [];
+        }
+    }
+
+    function saveLinks() {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(links));
+
+            // Keep the previous version's storage key compatible.
+            localStorage.setItem("saved_links", JSON.stringify(
+                links.map(item => ({
+                    ...item,
+                    fav: Boolean(item.favorite)
+                }))
+            ));
+
+            updateCounts();
+            return true;
+        } catch (error) {
+            console.error("Could not save links:", error);
+            showToast("Could not save. Check your browser storage.");
+            return false;
+        }
+    }
+
+    function showToast(message) {
+        toastElement.textContent = message;
+        toastElement.classList.add("show");
+
+        clearTimeout(toastTimer);
+
+        toastTimer = setTimeout(() => {
+            toastElement.classList.remove("show");
+        }, 2400);
+    }
+
+    function openSidebar() {
+        sidebar.classList.add("active");
+        overlay.classList.add("active");
+        menuButton.setAttribute("aria-expanded", "true");
+        document.body.style.overflow = "hidden";
+    }
+
+    function closeSidebar() {
+        sidebar.classList.remove("active");
+        overlay.classList.remove("active");
+        menuButton.setAttribute("aria-expanded", "false");
+        document.body.style.overflow = "";
+    }
+
+    function toggleSidebar() {
+        if (sidebar.classList.contains("active")) {
+            closeSidebar();
+        } else {
+            openSidebar();
+        }
+    }
+
+    function applyTheme(theme, announce) {
+        const dark = theme === "dark";
+
+        if (dark) {
+            document.documentElement.setAttribute("data-theme", "dark");
+        } else {
+            document.documentElement.removeAttribute("data-theme");
         }
 
-        function switchTab(tabName) {
-            document.querySelectorAll('.section-panel').forEach(panel => panel.classList.remove('active'));
-            document.querySelectorAll('.nav-links li').forEach(li => li.classList.remove('active'));
+        themeButton.textContent = dark ? "☀" : "☾";
+        themeButton.setAttribute(
+            "aria-label",
+            dark ? "Switch to light mode" : "Switch to dark mode"
+        );
+        themeButton.title = dark ? "Light Mode" : "Dark Mode";
 
-            document.getElementById(`panel-${tabName}`).classList.add('active');
-            document.getElementById(`tab-${tabName}`).classList.add('active');
+        document.querySelector('meta[name="theme-color"]')
+            .setAttribute("content", dark ? "#171518" : "#fff9fb");
 
-            if (tabName === 'settings') {
+        try {
+            localStorage.setItem(THEME_KEY, dark ? "dark" : "light");
+            localStorage.setItem("linkpocket.v1.theme", dark ? "dark" : "light");
+        } catch (error) {
+            console.warn("Theme preference could not be saved:", error);
+        }
+
+        if (announce) {
+            showToast(dark ? "Dark Mode enabled" : "Light Mode enabled");
+        }
+    }
+
+    function toggleTheme() {
+        const current = document.documentElement.getAttribute("data-theme");
+        applyTheme(current === "dark" ? "light" : "dark", true);
+    }
+
+    function switchTab(tabName) {
+        if (!["all", "fav", "settings"].includes(tabName)) {
+            return;
+        }
+
+        currentTab = tabName;
+
+        document.querySelectorAll(".section-panel").forEach(panel => {
+            panel.classList.remove("active");
+        });
+
+        document.querySelectorAll(".nav-links li").forEach(item => {
+            item.classList.remove("active");
+        });
+
+        $("panel-" + tabName).classList.add("active");
+        $("tab-" + tabName).classList.add("active");
+
+        const showInput = tabName !== "settings";
+        $("hero-area").style.display = showInput ? "" : "none";
+        $("link-form").style.display = showInput ? "" : "none";
+
+        closeSidebar();
+        renderLinks();
+    }
+
+    function normalizeURL(value) {
+        try {
+            const url = new URL(value);
+
+            if (url.protocol !== "http:" && url.protocol !== "https:") {
+                return null;
+            }
+
+            return url.href;
+        } catch (error) {
+            return null;
+        }
+    }
+
+    function getTitle(value) {
+        try {
+            const url = new URL(value);
+            return url.hostname.replace(/^www\./, "");
+        } catch (error) {
+            return value;
+        }
+    }
+
+    function createActionButton(symbol, label, className, callback) {
+        const button = document.createElement("button");
+
+        button.type = "button";
+        button.className = "action-btn" + (
+            className ? " " + className : ""
+        );
+        button.textContent = symbol;
+        button.title = label;
+        button.setAttribute("aria-label", label);
+
+        button.addEventListener("click", callback);
+
+        return button;
+    }
+
+    function createLinkCard(item) {
+        const card = document.createElement("article");
+        card.className = "link-card";
+
+        const info = document.createElement("div");
+        info.className = "link-info";
+
+        const anchor = document.createElement("a");
+        anchor.className = "link-title";
+        anchor.href = item.url;
+        anchor.target = "_blank";
+        anchor.rel = "noopener noreferrer";
+        anchor.textContent = item.title || getTitle(item.url);
+        anchor.title = item.url;
+
+        const urlText = document.createElement("div");
+        urlText.className = "link-url";
+        urlText.textContent = item.url;
+
+        info.append(anchor, urlText);
+
+        const actions = document.createElement("div");
+        actions.className = "actions-btn";
+
+        const favoriteButton = createActionButton(
+            item.favorite ? "★" : "☆",
+            item.favorite ? "Remove from Favorites" : "Add to Favorites",
+            item.favorite ? "fav" : "",
+            () => toggleFavorite(item.id)
+        );
+
+        actions.appendChild(favoriteButton);
+
+        actions.appendChild(createActionButton(
+            "▣",
+            "Copy link",
+            "",
+            async () => {
+                try {
+                    await navigator.clipboard.writeText(item.url);
+                    showToast("Link copied");
+                } catch (error) {
+                    copyFallback(item.url);
+                }
+            }
+        ));
+
+        actions.appendChild(createActionButton(
+            "↗",
+            "Open link",
+            "",
+            () => window.open(item.url, "_blank", "noopener,noreferrer")
+        ));
+
+        actions.appendChild(createActionButton(
+            "×",
+            "Delete link",
+            "delete",
+            () => deleteLink(item.id)
+        ));
+
+        card.append(info, actions);
+
+        return card;
+    }
+
+    function renderLinks() {
+        allContainer.replaceChildren();
+        favContainer.replaceChildren();
+
+        const allEmpty = document.createElement("div");
+        allEmpty.className = "empty-text";
+        allEmpty.textContent = links.length
+            ? ""
+            : "No links saved yet. Paste a URL above to save your first link.";
+
+        if (links.length === 0) {
+            allContainer.appendChild(allEmpty);
+        } else {
+            links.forEach(item => {
+                allContainer.appendChild(createLinkCard(item));
+            });
+        }
+
+        const favorites = links.filter(item => item.favorite);
+
+        if (favorites.length === 0) {
+            const empty = document.createElement("div");
+            empty.className = "empty-text";
+            empty.textContent = "No favorites yet. Tap ☆ on any link to add it here.";
+            favContainer.appendChild(empty);
+        } else {
+            favorites.forEach(item => {
+                favContainer.appendChild(createLinkCard(item));
+            });
+        }
+
+        updateCounts();
+    }
+
+    function updateCounts() {
+        $("count-all").textContent = String(links.length);
+        $("count-fav").textContent = String(
+            links.filter(item => item.favorite).length
+        );
+    }
+
+    function addLink(event) {
+        if (event) {
+            event.preventDefault();
+        }
+
+        const rawValue = linkInput.value.trim();
+
+        if (!rawValue) {
+            showToast("Paste a link first");
+            linkInput.focus();
+            return;
+        }
+
+        const url = normalizeURL(rawValue);
+
+        if (!url) {
+            showToast("Enter a valid HTTP or HTTPS link");
+            linkInput.focus();
+            return;
+        }
+
+        if (links.some(item => item.url === url)) {
+            showToast("This link is already saved");
+            return;
+        }
+
+        const item = {
+            id: Date.now().toString() + "-" +
+                Math.random().toString(36).slice(2, 8),
+            url: url,
+            title: getTitle(url),
+            favorite: false,
+            createdAt: Date.now()
+        };
+
+        links.unshift(item);
+
+        if (!saveLinks()) {
+            links = links.filter(link => link.id !== item.id);
+            return;
+        }
+
+        linkInput.value = "";
+        switchTab("all");
+        showToast("Link saved successfully");
+    }
+
+    function toggleFavorite(id) {
+        const item = links.find(link => link.id === id);
+
+        if (!item) {
+            return;
+        }
+
+        item.favorite = !item.favorite;
+
+        if (!saveLinks()) {
+            item.favorite = !item.favorite;
+            return;
+        }
+
+        renderLinks();
+        showToast(item.favorite ? "Added to Favorites" : "Removed from Favorites");
+    }
+
+    function deleteLink(id) {
+        const item = links.find(link => link.id === id);
+
+        if (!item) {
+            return;
+        }
+
+        if (!confirm("Delete this saved link?")) {
+            return;
+        }
+
+        const oldLinks = links;
+        links = links.filter(link => link.id !== id);
+
+        if (!saveLinks()) {
+            links = oldLinks;
+            return;
+        }
+
+        renderLinks();
+        showToast("Link deleted");
+    }
+
+    async function copyFallback(text) {
+        try {
+            const textarea = document.createElement("textarea");
+            textarea.value = text;
+            textarea.style.position = "fixed";
+            textarea.style.opacity = "0";
+            document.body.appendChild(textarea);
+            textarea.select();
+
+            const successful = document.execCommand("copy");
+            textarea.remove();
+
+            showToast(successful ? "Link copied" : "Copy failed. Open the link to copy it.");
+        } catch (error) {
+            showToast("Copy is unavailable in this browser");
+        }
+    }
+
+    function clearData() {
+        if (links.length === 0) {
+            showToast("There are no saved links to delete");
+            return;
+        }
+
+        const confirmed = confirm(
+            "Delete ALL saved links and favorites? This cannot be undone."
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        const oldLinks = links;
+        links = [];
+
+        if (!saveLinks()) {
+            links = oldLinks;
+            return;
+        }
+
+        renderLinks();
+        showToast("All saved links deleted");
+        switchTab("all");
+    }
+
+    menuButton.addEventListener("click", toggleSidebar);
+    $("close-menu").addEventListener("click", closeSidebar);
+    overlay.addEventListener("click", closeSidebar);
+
+    themeButton.addEventListener("click", toggleTheme);
+    $("settings-theme").addEventListener("click", toggleTheme);
+
+    linkForm.addEventListener("submit", addLink);
+    $("clear-data").addEventListener("click", clearData);
+
+    document.querySelectorAll(".nav-links li").forEach(item => {
+        item.addEventListener("click", () => {
+            switchTab(item.dataset.tab);
+        });
+    });
+
+    document.addEventListener("keydown", event => {
+        if (event.key === "Escape") {
+            closeSidebar();
+        }
+    });
+
+    // Restore the saved theme when the page opens.
+    let savedTheme = "light";
+
+    try {
+        savedTheme = localStorage.getItem(THEME_KEY) || "light";
+    } catch (error) {
+        console.warn("Could not read saved theme:", error);
+    }
+
+    applyTheme(savedTheme, false);
+    renderLinks();
+})();
+</script>
+
+</body>
+</html>
